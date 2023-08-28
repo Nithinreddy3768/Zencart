@@ -1,0 +1,126 @@
+<%- include("layouts/header")  -%>
+
+<% if(typeof cart=="undefined"){ %>
+<h5 style="text-align: center; font-size: xx-large; font-weight: 900;">Cart is empty</h5>
+<%} else { %>
+  
+<!-- Cart Start -->
+<div class="container-fluid pt-5">
+     
+    <div class="row px-xl-5">
+        <div class="col-lg-8 table-responsive mb-5">
+            
+            <table class="table table-bordered text-center mb-0">
+                <h4 style="text-align: center; font-size: 6em; background: #904d4d;" >cart</h4>
+                <thead class="bg-secondary text-dark">
+                    <tr>
+                        <th>Products</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Sub-total</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody class="align-middle">
+                    <% cart.forEach(function(prod){%>
+                   <tr>
+                    <% tot+=(prod.qty)*(prod.price) %>
+                        <td class="align-middle"><img src="<%= prod.image %>" alt="" style="width: 70px;"> <%= prod.title %>  </td>
+                        <td class="align-middle"><%= prod.price %></td>
+                        <td class="align-middle">
+                            <div class="input-group quantity mx-auto" style="width: 100px;">
+                                
+                                <div class="input-group-btn">
+                                    <a href="/cart/update/<%=prod.title%>?action=minus">
+                                    <button class="btn btn-sm btn-primary btn-minus" >
+                                    <i class="fa fa-minus"></i>
+                                    </button>
+                                    </a>
+                                </div>
+                                <input type="text" class="form-control form-control-sm bg-secondary text-center" value=<%= prod.qty %>>
+                              
+                                <div class="input-group-btn">
+                                    <a href="/cart/update/<%=prod.title%>?action=add">
+                                    <button class="btn btn-sm btn-primary btn-plus">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="align-middle"><%= (prod.price)*(prod.qty) %></td>
+                        <td class="align-middle">
+                            <a href="/cart/update/<%=prod.title%>?action=clear">
+                            <button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button>
+                            </a>
+                        </td>
+                    </tr>
+                    
+                    <%})%>
+                    
+                </tbody>
+            </table>
+            <a id="clear_cart" href="/cart/clearcart" >
+            <button class><i class="fas fa-shopping-cart"></i>Clear Cart</button>
+            </a>
+        </div>
+        <div class="col-lg-4">
+            <!-- <form class="mb-5" action="">
+                <div class="input-group">
+                    <input type="text" class="form-control p-4" placeholder="Coupon Code">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary">Apply Coupon</button>
+                    </div>
+                </div>
+            </form> -->
+            <div class="card border-secondary mb-5">
+                <div class="card-header bg-secondary border-0">
+                    <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3 pt-1">
+                        <h6 class="font-weight-medium">Subtotal</h6>
+                        <h6 class="font-weight-medium"><%= tot %></h6>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 pt-1">
+                        <h6 class="font-weight-medium">Shipping</h6>
+                        <h6 class="font-weight-medium">Free</h6>
+                    </div>
+                </div>
+                <div class="card-footer border-secondary bg-transparent">
+                    <div class="d-flex justify-content-between mt-2">
+                        <h5 class="font-weight-bold">Total</h5>
+                        <h5 class="font-weight-bold">$<%= tot%></h5>
+                    </div>
+                    <button class="btn btn-block btn-primary my-3 py-3"><i class="fas fa-shopping-cart fa-spin fa-lg"></i>Proceed To Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form class="pp" action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+    <input type="hidden" name="cmd" value="_cart">
+    <input type="hidden" name="upload" value="1">
+    <input type="hidden" name="business" value="subbusubhash369234@gmail.com">
+    <% var num = 0; %>
+    <% cart.forEach(function(p){ %>
+        <% num++ %>
+        <input type="hidden" name="item_name_<%= num %>" value="<%= p.title %>">
+        <input type="hidden" name="amount_<%= num %>" value="<%= p.price %>">
+        <input type="hidden" name="quantity_<%= num %>" value="<%= p.qty %>">
+    <% }); %>
+    <input type="hidden" name="currency_code" value="USD">
+    <input type="hidden" name="amount" value="<%= tot %>">
+    <input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+    </form>
+    <%  } %>
+<script>
+document.getElementById("clear_cart").addEventListener("click",function()
+{
+    if(!confirm("are you sure u want to clear cart"))
+    event.preventDefault();
+})
+</script>
+<!-- Cart End -->
+<%- include("layouts/footer")  -%>

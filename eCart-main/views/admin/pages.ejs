@@ -1,0 +1,24 @@
+<%- include('../layouts/adminheader') %>
+<table class="table table-striped table-dark " style=" border: 1px solid #eceaea">
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Edit</th>
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+        <%  pages.forEach((page)=>{ %>
+      <tr>
+        <td><%= page.title   %></td>
+        <td><a href="/admin/pages/edit-page/<%=page.id%>">Edit</a></td>
+        <% if(page.slug!=='Home'){ %>
+        <td><a href="/admin/pages/delete-page/<%=page.id%>">Delete</a></td>
+        <% } %>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <button type="button" class="btn btn-primary"><a href="/admin/pages/add-page" style="color: black;">Add page</a></button>
+
+<%- include('../layouts/adminfooter') %>
